@@ -1,0 +1,49 @@
+# Pastas geradas pela Unity que não devem ser versionadas
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+
+# Cache do Visual Studio e Rider
+.vs/
+/[Aa]ssets/Plugins/Editor/JetBrains*
+
+# Cache do Gradle
+.gradle/
+
+# Arquivos de projeto gerados automaticamente
+ExportedObj/
+.consulo/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# Arquivos meta gerados pela Unity
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# Relatórios de crash
+sysinfo.txt
+
+# Builds e pacotes
+*.apk
+*.aab
+*.unitypackage
+*.app
