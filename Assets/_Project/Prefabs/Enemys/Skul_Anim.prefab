@@ -130,8 +130,8 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.5
-  m_Acceleration: 8
+  m_Speed: 7
+  m_Acceleration: 10
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 0
@@ -155,8 +155,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   prefabMoeda: {fileID: 1826796762935933301, guid: 00cbf2c0913e68c48b907cf17babb73e, type: 3}
-  danoAoPlayer: 10
-  tempoEntreAtaques: 1
+  danoAoPlayer: 12
+  tempoEntreAtaques: 1.5
 --- !u!136 &6349113148460859699
 CapsuleCollider:
   m_ObjectHideFlags: 0

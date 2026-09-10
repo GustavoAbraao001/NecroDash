@@ -2,7 +2,7 @@
 - Project name: NecroDash
 - Unity version: Unity 6000.5.8f1
 - Active game object:
-  - Name: CoinManager
-  - Tag: Untagged
-  - Layer: Default
+  - Name: Skul_Anim
+  - Tag: inimigo
+  - Layer: Inimigo
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->

@@ -8,6 +8,9 @@ public class PlayerMove : MonoBehaviour
     public Joystick joystick;
     public float velocidade = 5f;
 
+    [Header("Colisão do Dash")]
+    public LayerMask camadaObstaculos;
+
     [Header("Dash 1")]
     public float velocidadeDash1 = 25f;
     public float duracaoDash1 = 0.15f;
@@ -205,30 +208,22 @@ public class PlayerMove : MonoBehaviour
         while (tempoDash < duracaoDoDash)
         {
             float distancia =
-                velocidadeDoDash *
-                Time.fixedDeltaTime;
+                velocidadeDoDash * Time.fixedDeltaTime;
 
-            // Verifica se existe uma parede/objeto sólido
-            // antes de mover o Rigidbody.
-            if (rb.SweepTest(
+            if (Physics.Raycast(
+                rb.position,
                 direcaoDash,
                 out RaycastHit hit,
                 distancia,
+                camadaObstaculos,
                 QueryTriggerInteraction.Ignore))
             {
-                // Encontrou algo sólido.
-                // Para o Dash imediatamente.
-                Debug.Log(
-                    "Dash bloqueado por: " +
-                    hit.collider.name
-                );
-
+                Debug.Log("Dash bloqueado por: " + hit.collider.name);
                 break;
             }
 
             rb.MovePosition(
-                rb.position +
-                direcaoDash * distancia
+                rb.position + direcaoDash * distancia
             );
 
             tempoDash += Time.fixedDeltaTime;
@@ -238,7 +233,10 @@ public class PlayerMove : MonoBehaviour
 
         isDashing = false;
         isInvulneravel = false;
+
     }
+
+
 
     // =========================================================
     // RECARREGAR DASH 1

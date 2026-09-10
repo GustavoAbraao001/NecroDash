@@ -1,44 +1,135 @@
-using NUnit.Framework;
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.AI;
 
 public class SpawnManager : MonoBehaviour
 {
-    [Header("Configurações do Pool ")]
-    public GameObject inimigoPrefab;
-    public int quantidadeNoPool = 50;
+    [Header("Prefabs dos Inimigos")]
+    public GameObject prefabCaveira;
+    public GameObject prefabZumbi;
 
-    private List<GameObject> poolDeInimigos = new List<GameObject>();
+    [Header("Quantidade no Pool")]
+    public int quantidadeCaveiras = 25;
+    public int quantidadeZumbis = 25;
+
+    private List<GameObject> poolCaveiras =
+        new List<GameObject>();
+
+    private List<GameObject> poolZumbis =
+        new List<GameObject>();
 
     [Header("Configurações de Spawn")]
     public Transform player;
-    private float distanciaMinimaParaSpawn = 10f;
-    private float distanciaMaximaParaSpawn = 25f;
-    public float raioDeSpawn = 15f;
+
+    public float distanciaMinimaParaSpawn = 10f;
+    public float distanciaMaximaParaSpawn = 25f;
     public float tempoEntreSpawns = 2f;
+
+    [Header("Distribuição")]
+    [Range(0f, 1f)]
+    public float chanceDeCaveira = 0.5f;
 
     private void Start()
     {
-        for (int i = 0; i < quantidadeNoPool; i++)
-        {
-            GameObject inimigo = Instantiate(inimigoPrefab);
-            inimigo.SetActive(false);
-            poolDeInimigos.Add(inimigo);
-        }
+        CriarPool(
+            prefabCaveira,
+            quantidadeCaveiras,
+            poolCaveiras
+        );
 
-        InvokeRepeating(nameof(SpawnarInimigo), 1f, tempoEntreSpawns);
+        CriarPool(
+            prefabZumbi,
+            quantidadeZumbis,
+            poolZumbis
+        );
+
+        InvokeRepeating(
+            nameof(SpawnarInimigo),
+            1f,
+            tempoEntreSpawns
+        );
     }
 
-    void SpawnarInimigo()
+    // =========================================================
+    // CRIAR POOL
+    // =========================================================
+
+    private void CriarPool(
+        GameObject prefab,
+        int quantidade,
+        List<GameObject> pool
+    )
+    {
+        if (prefab == null)
+        {
+            Debug.LogError(
+                "Prefab não configurado no SpawnManager."
+            );
+
+            return;
+        }
+
+        for (int i = 0; i < quantidade; i++)
+        {
+            GameObject inimigo =
+                Instantiate(prefab);
+
+            inimigo.SetActive(false);
+
+            pool.Add(inimigo);
+        }
+    }
+
+    // =========================================================
+    // SPAWN
+    // =========================================================
+
+    private void SpawnarInimigo()
     {
         if (player == null)
             return;
 
-        GameObject inimigoDisponivel = ObterInimigoDoPool();
+        // Decide qual inimigo será criado
+        bool spawnarCaveira =
+            Random.value <= chanceDeCaveira;
+
+        GameObject inimigoDisponivel;
+
+        if (spawnarCaveira)
+        {
+            inimigoDisponivel =
+                ObterInimigoDoPool(poolCaveiras);
+        }
+        else
+        {
+            inimigoDisponivel =
+                ObterInimigoDoPool(poolZumbis);
+        }
+
+        // Se não encontrou desse tipo,
+        // tenta o outro tipo.
+        if (inimigoDisponivel == null)
+        {
+            if (spawnarCaveira)
+            {
+                inimigoDisponivel =
+                    ObterInimigoDoPool(poolZumbis);
+            }
+            else
+            {
+                inimigoDisponivel =
+                    ObterInimigoDoPool(poolCaveiras);
+            }
+        }
 
         if (inimigoDisponivel == null)
+        {
+            Debug.Log(
+                "Todos os inimigos do pool estão ativos."
+            );
+
             return;
+        }
 
         Vector3 pontoValido;
 
@@ -51,63 +142,87 @@ public class SpawnManager : MonoBehaviour
         }
 
         float distancia =
-            Vector3.Distance(player.position, pontoValido);
+            Vector3.Distance(
+                player.position,
+                pontoValido
+            );
 
         if (distancia < distanciaMinimaParaSpawn)
             return;
 
-        NavMeshAgent agent =
-            inimigoDisponivel.GetComponent<NavMeshAgent>();
+        inimigoDisponivel.transform.position =
+            pontoValido;
 
-        inimigoDisponivel.transform.position = pontoValido;
+        inimigoDisponivel.transform.rotation =
+            Quaternion.identity;
 
         inimigoDisponivel.SetActive(true);
 
+        NavMeshAgent agent =
+            inimigoDisponivel.GetComponent<NavMeshAgent>();
+
         if (agent != null)
         {
-            agent.enabled = true;
+            if (!agent.enabled)
+            {
+                agent.enabled = true;
+            }
+
             agent.Warp(pontoValido);
         }
     }
 
-    GameObject ObterInimigoDoPool()
+    // =========================================================
+    // PEGAR INIMIGO DO POOL
+    // =========================================================
+
+    private GameObject ObterInimigoDoPool(
+        List<GameObject> pool
+    )
     {
-        for(int i =0; i < poolDeInimigos.Count; i++)
+        for (int i = 0; i < pool.Count; i++)
         {
-            if(!poolDeInimigos[i].activeInHierarchy)
+            if (!pool[i].activeInHierarchy)
             {
-                return poolDeInimigos[i];
+                return pool[i];
             }
         }
 
         return null;
     }
 
-    bool EncontrarPontoAleatorioNoNavMesh(Vector3 centro, float raio, out Vector3 resultado)
+    // =========================================================
+    // ENCONTRAR PONTO NO NAVMESH
+    // =========================================================
+
+    private bool EncontrarPontoAleatorioNoNavMesh(
+        Vector3 centro,
+        float raio,
+        out Vector3 resultado
+    )
     {
-       
-        for(int i = 0; i < 30; i++)
+        for (int i = 0; i < 30; i++)
         {
-            Vector3 pontoAleatorio = centro + Random.insideUnitSphere * raio;
+            Vector3 pontoAleatorio =
+                centro +
+                Random.insideUnitSphere * raio;
+
             NavMeshHit hit;
 
-            if (NavMesh.SamplePosition(pontoAleatorio, out hit, 1.0f, NavMesh.AllAreas))
+            if (NavMesh.SamplePosition(
+                pontoAleatorio,
+                out hit,
+                1.0f,
+                NavMesh.AllAreas
+            ))
             {
                 resultado = hit.position;
                 return true;
             }
         }
+
         resultado = Vector3.zero;
+
         return false;
     }
-
-
-
-
-
-
-
-
-
-
 }

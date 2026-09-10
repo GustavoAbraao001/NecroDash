@@ -6,10 +6,15 @@ public class Enemy : MonoBehaviour
     private Transform player;
     private NavMeshAgent agent;
 
+  
+
     [Header("Recompensas e Combate")]
-    public GameObject prefabMoeda;
     public int danoAoPlayer = 10;
     public float tempoEntreAtaques = 1f;
+
+    [Header("Drop de Moeda")]
+    public GameObject prefabMoeda;
+    public float alturaDropMoeda = 0.8f;
 
     private float tempoUltimoAtaque = 0f;
 
@@ -58,10 +63,13 @@ public class Enemy : MonoBehaviour
             Vector3 posicaoDrop =
             transform.position + Vector3.up * 0.5f;
 
+            Vector3 posicaoMoeda =
+             transform.position + Vector3.up * alturaDropMoeda;
+
             Instantiate(
-               prefabMoeda,
-               transform.position,
-               Quaternion.Euler(-90f, 0f, 0f)
+                prefabMoeda,
+                posicaoMoeda,
+                Quaternion.Euler(-90f, 0f, 0f)
             );
 
         }
