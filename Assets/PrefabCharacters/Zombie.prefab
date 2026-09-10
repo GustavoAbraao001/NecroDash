@@ -699,6 +699,8 @@ GameObject:
   - component: {fileID: 677900147894934717}
   - component: {fileID: 475959188972664603}
   - component: {fileID: 1799991931273473801}
+  - component: {fileID: -1866689039369837443}
+  - component: {fileID: -370848677392193106}
   m_Layer: 0
   m_Name: Zombie
   m_TagString: Untagged
@@ -756,7 +758,7 @@ Animator:
   m_GameObject: {fileID: 6974174620231443579}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: cf3ee040fe5112f479c98398335c1df7, type: 2}
+  m_Controller: {fileID: 9100000, guid: b5489924ba091284aba6f9be9f9f625f, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -795,6 +797,44 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!195 &-1866689039369837443
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6974174620231443579}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 7
+  m_Acceleration: 10
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!114 &-370848677392193106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6974174620231443579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8729e4936aa69924caa8db6854ee9eaa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  danoAoPlayer: 10
+  tempoEntreAtaques: 1
+  prefabMoeda: {fileID: 1826796762935933301, guid: 00cbf2c0913e68c48b907cf17babb73e, type: 3}
+  alturaDropMoeda: 0.8
 --- !u!1 &7016604037332122660
 GameObject:
   m_ObjectHideFlags: 0

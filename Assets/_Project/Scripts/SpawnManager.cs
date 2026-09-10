@@ -4,9 +4,17 @@ using UnityEngine.AI;
 
 public class SpawnManager : MonoBehaviour
 {
+    // =========================================================
+    // PREFABS
+    // =========================================================
+
     [Header("Prefabs dos Inimigos")]
     public GameObject prefabCaveira;
     public GameObject prefabZumbi;
+
+    // =========================================================
+    // POOL
+    // =========================================================
 
     [Header("Quantidade no Pool")]
     public int quantidadeCaveiras = 25;
@@ -18,16 +26,60 @@ public class SpawnManager : MonoBehaviour
     private List<GameObject> poolZumbis =
         new List<GameObject>();
 
+    // =========================================================
+    // PLAYER / DISTÂNCIAS
+    // =========================================================
+
     [Header("Configurações de Spawn")]
     public Transform player;
 
     public float distanciaMinimaParaSpawn = 10f;
+
     public float distanciaMaximaParaSpawn = 25f;
+
     public float tempoEntreSpawns = 2f;
 
-    [Header("Distribuição")]
+    // =========================================================
+    // DISTRIBUIÇÃO DOS INIMIGOS
+    // =========================================================
+
+    [Header("Distribuição dos Inimigos")]
     [Range(0f, 1f)]
     public float chanceDeCaveira = 0.5f;
+
+    // 0.5 = 50%
+    // 0.7 = 70%
+    // 0.3 = 30%
+
+    // =========================================================
+    // ESCALONAMENTO
+    // =========================================================
+
+    [Header("Escalonamento de Dificuldade")]
+    public int inimigosIniciaisPorSpawn = 1;
+
+    public int aumentoDeInimigos = 1;
+
+    public float intervaloDeAumento = 30f;
+
+    public int limiteDeInimigosPorSpawn = 10;
+
+    // =========================================================
+    // LIMITE DE INIMIGOS ATIVOS
+    // =========================================================
+
+    [Header("Limite de Inimigos Ativos")]
+    public int limiteInimigosAtivos = 20;
+
+    // =========================================================
+    // CONTROLE DO TEMPO
+    // =========================================================
+
+    private float tempoDePartida = 0f;
+
+    // =========================================================
+    // INICIALIZAÇÃO
+    // =========================================================
 
     private void Start()
     {
@@ -51,6 +103,15 @@ public class SpawnManager : MonoBehaviour
     }
 
     // =========================================================
+    // UPDATE
+    // =========================================================
+
+    private void Update()
+    {
+        tempoDePartida += Time.deltaTime;
+    }
+
+    // =========================================================
     // CRIAR POOL
     // =========================================================
 
@@ -63,7 +124,7 @@ public class SpawnManager : MonoBehaviour
         if (prefab == null)
         {
             Debug.LogError(
-                "Prefab não configurado no SpawnManager."
+                "SpawnManager: prefab não configurado!"
             );
 
             return;
@@ -86,14 +147,62 @@ public class SpawnManager : MonoBehaviour
 
     private void SpawnarInimigo()
     {
-        if (player == null)
-            return;
+        Debug.Log("Tentando spawnar inimigo...");
 
-        // Decide qual inimigo será criado
+        if (player == null)
+        {
+            Debug.LogWarning(
+                "SpawnManager: Player não configurado!"
+            );
+
+            return;
+        }
+
+        // Verifica o limite de inimigos ativos
+        int inimigosAtivos =
+            ContarInimigosAtivos();
+
+        if (inimigosAtivos >= limiteInimigosAtivos)
+        {
+            return;
+        }
+
+        // Descobre quantos inimigos devem nascer
+        int quantidade =
+            CalcularInimigosPorSpawn();
+
+        // Não deixa ultrapassar o limite
+        int espacoDisponivel =
+            limiteInimigosAtivos - inimigosAtivos;
+
+        quantidade =
+            Mathf.Min(
+                quantidade,
+                espacoDisponivel
+            );
+
+        // Cria os inimigos
+        for (int i = 0; i < quantidade; i++)
+        {
+            SpawnarUmInimigo();
+        }
+    }
+
+    // =========================================================
+    // SPAWN DE UM INIMIGO
+    // =========================================================
+
+    private void SpawnarUmInimigo()
+    {
+        // Decide qual tipo de inimigo será criado
         bool spawnarCaveira =
             Random.value <= chanceDeCaveira;
 
         GameObject inimigoDisponivel;
+
+        // =====================================================
+        // TENTA PEGAR O TIPO ESCOLHIDO
+        // =====================================================
 
         if (spawnarCaveira)
         {
@@ -106,8 +215,11 @@ public class SpawnManager : MonoBehaviour
                 ObterInimigoDoPool(poolZumbis);
         }
 
-        // Se não encontrou desse tipo,
-        // tenta o outro tipo.
+        // =====================================================
+        // SE NÃO EXISTIR DESSE TIPO,
+        // TENTA O OUTRO
+        // =====================================================
+
         if (inimigoDisponivel == null)
         {
             if (spawnarCaveira)
@@ -122,14 +234,19 @@ public class SpawnManager : MonoBehaviour
             }
         }
 
+        // Se não existe inimigo disponível
         if (inimigoDisponivel == null)
         {
             Debug.Log(
-                "Todos os inimigos do pool estão ativos."
+                "SpawnManager: pool de inimigos esgotado."
             );
 
             return;
         }
+
+        // =====================================================
+        // ENCONTRA POSIÇÃO
+        // =====================================================
 
         Vector3 pontoValido;
 
@@ -141,6 +258,10 @@ public class SpawnManager : MonoBehaviour
             return;
         }
 
+        // =====================================================
+        // CONFIRMA DISTÂNCIA MÍNIMA
+        // =====================================================
+
         float distancia =
             Vector3.Distance(
                 player.position,
@@ -148,7 +269,13 @@ public class SpawnManager : MonoBehaviour
             );
 
         if (distancia < distanciaMinimaParaSpawn)
+        {
             return;
+        }
+
+        // =====================================================
+        // POSICIONA
+        // =====================================================
 
         inimigoDisponivel.transform.position =
             pontoValido;
@@ -156,7 +283,15 @@ public class SpawnManager : MonoBehaviour
         inimigoDisponivel.transform.rotation =
             Quaternion.identity;
 
+        // =====================================================
+        // ATIVA
+        // =====================================================
+
         inimigoDisponivel.SetActive(true);
+
+        // =====================================================
+        // NAVMESH AGENT
+        // =====================================================
 
         NavMeshAgent agent =
             inimigoDisponivel.GetComponent<NavMeshAgent>();
@@ -192,6 +327,60 @@ public class SpawnManager : MonoBehaviour
     }
 
     // =========================================================
+    // CALCULAR QUANTIDADE DE INIMIGOS
+    // =========================================================
+
+    private int CalcularInimigosPorSpawn()
+    {
+        int nivel =
+            Mathf.FloorToInt(
+                tempoDePartida /
+                intervaloDeAumento
+            );
+
+        int quantidade =
+            inimigosIniciaisPorSpawn +
+            (nivel * aumentoDeInimigos);
+
+        quantidade =
+            Mathf.Min(
+                quantidade,
+                limiteDeInimigosPorSpawn
+            );
+
+        return quantidade;
+    }
+
+    // =========================================================
+    // CONTAR INIMIGOS ATIVOS
+    // =========================================================
+
+    private int ContarInimigosAtivos()
+    {
+        int quantidade = 0;
+
+        // Caveiras
+        for (int i = 0; i < poolCaveiras.Count; i++)
+        {
+            if (poolCaveiras[i].activeInHierarchy)
+            {
+                quantidade++;
+            }
+        }
+
+        // Zumbis
+        for (int i = 0; i < poolZumbis.Count; i++)
+        {
+            if (poolZumbis[i].activeInHierarchy)
+            {
+                quantidade++;
+            }
+        }
+
+        return quantidade;
+    }
+
+    // =========================================================
     // ENCONTRAR PONTO NO NAVMESH
     // =========================================================
 
@@ -217,6 +406,7 @@ public class SpawnManager : MonoBehaviour
             ))
             {
                 resultado = hit.position;
+
                 return true;
             }
         }
