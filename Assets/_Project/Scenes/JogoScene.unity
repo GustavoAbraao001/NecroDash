@@ -664,9 +664,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1502019040}
-        m_TargetAssemblyTypeName: DeathManager, Assembly-CSharp
-        m_MethodName: ReviverTeste
+      - m_Target: {fileID: 1373357541}
+        m_TargetAssemblyTypeName: AdsManager, Assembly-CSharp
+        m_MethodName: MostrarAdRevive
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -784,63 +784,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8436063428437050324, guid: a9b419436adc4b54787b783c68a73041, type: 3}
   m_PrefabInstance: {fileID: 94600380}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &96406438
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 2278571709533873660, guid: a74424618dc36854dab33791dfdd2589, type: 3}
-      propertyPath: m_Name
-      value: PlayerTestPrefabGoat
-      objectReference: {fileID: 0}
-    - target: {fileID: 2673651887147391009, guid: a74424618dc36854dab33791dfdd2589, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -1.77
-      objectReference: {fileID: 0}
-    - target: {fileID: 2673651887147391009, guid: a74424618dc36854dab33791dfdd2589, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.0004397132
-      objectReference: {fileID: 0}
-    - target: {fileID: 2673651887147391009, guid: a74424618dc36854dab33791dfdd2589, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -2.59
-      objectReference: {fileID: 0}
-    - target: {fileID: 2673651887147391009, guid: a74424618dc36854dab33791dfdd2589, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2673651887147391009, guid: a74424618dc36854dab33791dfdd2589, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2673651887147391009, guid: a74424618dc36854dab33791dfdd2589, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2673651887147391009, guid: a74424618dc36854dab33791dfdd2589, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2673651887147391009, guid: a74424618dc36854dab33791dfdd2589, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2673651887147391009, guid: a74424618dc36854dab33791dfdd2589, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2673651887147391009, guid: a74424618dc36854dab33791dfdd2589, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: a74424618dc36854dab33791dfdd2589, type: 3}
 --- !u!1001 &124089303
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11950,6 +11893,7 @@ MonoBehaviour:
   appKey: 28110291d
   adUnitMoedas: ufidyutk0bf5sqal
   adUnitRevive: ri7icp1vqt4sqxxp
+  moedasPorAds: 20
 --- !u!4 &1373357542
 Transform:
   m_ObjectHideFlags: 0
@@ -12847,8 +12791,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeathManager
   painelMorte: {fileID: 360463298}
-  playerVida: {fileID: 0}
+  playerVida: {fileID: 423285866}
   porcentagemVidaAoReviver: 0.5
+  tempoInvulnerabilidadeRevive: 2
 --- !u!4 &1502019041
 Transform:
   m_ObjectHideFlags: 0
@@ -18533,5 +18478,4 @@ SceneRoots:
   - {fileID: 1502019041}
   - {fileID: 1340963027}
   - {fileID: 1373357542}
-  - {fileID: 96406438}
   - {fileID: 423285862}
