@@ -8,6 +8,8 @@ public class vidaPlayer : MonoBehaviour
 
     private int vidaAtual;
 
+    private bool estaMorto = false;
+
     [Header("Interface")]
     public Slider barraDeVida;
 
@@ -26,13 +28,28 @@ public class vidaPlayer : MonoBehaviour
 
     public void TomarDano(int quantidadeDeDano)
     {
-        if (playerMove != null && playerMove.isInvulneravel)
+        if (estaMorto)
             return;
 
-        vidaAtual -= quantidadeDeDano;
-        vidaAtual = Mathf.Clamp(vidaAtual, 0, vidaMaxima);
+        if (playerMove != null &&
+            playerMove.isInvulneravel)
+        {
+            return;
+        }
 
-        Debug.Log("Vida atual: " + vidaAtual);
+        vidaAtual -= quantidadeDeDano;
+
+        vidaAtual =
+            Mathf.Clamp(
+                vidaAtual,
+                0,
+                vidaMaxima
+            );
+
+        Debug.Log(
+            "Vida atual: " +
+            vidaAtual
+        );
 
         AtualizarBarraVida();
 
@@ -42,37 +59,64 @@ public class vidaPlayer : MonoBehaviour
         }
     }
 
+    private void Morrer()
+    {
+        if (estaMorto)
+            return;
+
+        estaMorto = true;
+
+        Debug.Log(
+            "O jogador morreu!"
+        );
+
+        if (DeathManager.Instance != null)
+        {
+            DeathManager.Instance.MostrarTelaDeMorte();
+        }
+    }
+
+    public void Reviver(float porcentagemVida)
+    {
+        vidaAtual =
+            Mathf.RoundToInt(
+                vidaMaxima *
+                porcentagemVida
+            );
+
+        vidaAtual =
+            Mathf.Clamp(
+                vidaAtual,
+                1,
+                vidaMaxima
+            );
+
+        estaMorto = false;
+
+        AtualizarBarraVida();
+
+        Debug.Log(
+            "Player reviveu com " +
+            vidaAtual +
+            "/" +
+            vidaMaxima +
+            " de vida."
+        );
+    }
+
     private void AtualizarBarraVida()
     {
         if (barraDeVida == null)
         {
-            Debug.LogError("A barraDeVida NÃO está atribuída!");
+            Debug.LogError(
+                "A barraDeVida NÃO está atribuída!"
+            );
+
             return;
         }
 
         barraDeVida.minValue = 0;
         barraDeVida.maxValue = vidaMaxima;
         barraDeVida.value = vidaAtual;
-
-        Debug.Log(
-            "Slider atualizado: " +
-            barraDeVida.value +
-            "/" +
-            barraDeVida.maxValue
-        );
-    }
-
-    private void Morrer()
-    {
-        Debug.Log("O jogador morreu!");
-
-        if (DeathManager.Instance != null)
-        {
-            DeathManager.Instance.MostrarTelaDeMorte();
-        }
-        else
-        {
-            Time.timeScale = 0f;
-        }
     }
 }

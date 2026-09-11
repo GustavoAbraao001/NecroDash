@@ -275,7 +275,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e346e4bf73f7ff48a3ee41be69c8323, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CoinManager
-  apagarDadosAoIniciar: 0
+  apagarDadosAoIniciar: 1
   dados:
     moedas: 0
     duploDashComprado: 0

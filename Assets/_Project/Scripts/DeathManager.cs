@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,6 +8,16 @@ public class DeathManager : MonoBehaviour
 
     [Header("Interface")]
     public GameObject painelMorte;
+
+    [Header("Player")]
+    public vidaPlayer playerVida;
+
+    [Range(0.1f, 1f)]
+    public float porcentagemVidaAoReviver = 0.5f;
+
+    public float tempoInvulnerabilidadeRevive = 2f;
+
+    private bool podeReviver = false;
 
     private void Awake()
     {
@@ -19,14 +30,31 @@ public class DeathManager : MonoBehaviour
         Instance = this;
     }
 
+    private void Start()
+    {
+        if (playerVida == null)
+        {
+            GameObject player =
+                GameObject.FindWithTag("Player");
+
+            if (player != null)
+            {
+                playerVida =
+                    player.GetComponent<vidaPlayer>();
+            }
+        }
+    }
+
     public void MostrarTelaDeMorte()
     {
-        Time.timeScale = 0f;
+        podeReviver = true;
 
         if (painelMorte != null)
         {
             painelMorte.SetActive(true);
         }
+
+        Debug.Log("Tela de morte aberta.");
     }
 
     public void VoltarAoMenu()
@@ -36,14 +64,56 @@ public class DeathManager : MonoBehaviour
         SceneManager.LoadScene("MenuScene");
     }
 
-    // TEMPORÁRIO
-    // Futuramente será chamado após Rewarded Ad
-    public void ReviverTeste()
+    public void Reviver()
     {
+        if (!podeReviver)
+            return;
+
+        podeReviver = false;
+
         Time.timeScale = 1f;
 
-        Debug.Log("REVIVER TESTE");
+        if (playerVida != null)
+        {
+            playerVida.Reviver(
+                porcentagemVidaAoReviver
+            );
+        }
 
-        SceneManager.LoadScene("JogoScene");
+        if (painelMorte != null)
+        {
+            painelMorte.SetActive(false);
+        }
+
+        StartCoroutine(
+            InvulnerabilidadeRevive()
+        );
+
+        Debug.Log("PLAYER REVIVIDO!");
+    }
+
+    private IEnumerator InvulnerabilidadeRevive()
+    {
+        if (playerVida == null)
+            yield break;
+
+        PlayerMove playerMove =
+            playerVida.GetComponent<PlayerMove>();
+
+        if (playerMove == null)
+            yield break;
+
+        playerMove.isInvulneravel = true;
+
+        yield return new WaitForSeconds(
+            tempoInvulnerabilidadeRevive
+        );
+
+        playerMove.isInvulneravel = false;
+    }
+
+    public void ReviverTeste()
+    {
+        Reviver();
     }
 }
