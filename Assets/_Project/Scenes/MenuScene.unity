@@ -256,6 +256,7 @@ GameObject:
   m_Component:
   - component: {fileID: 476109037}
   - component: {fileID: 476109036}
+  - component: {fileID: 476109038}
   m_Layer: 0
   m_Name: CoinManager
   m_TagString: Untagged
@@ -275,10 +276,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e346e4bf73f7ff48a3ee41be69c8323, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CoinManager
-  apagarDadosAoIniciar: 1
+  apagarDadosAoIniciar: 0
   dados:
     moedas: 0
     duploDashComprado: 0
+    dataAtualizacaoUtcTicks: 0
 --- !u!4 &476109037
 Transform:
   m_ObjectHideFlags: 0
@@ -294,6 +296,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &476109038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 476109035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42383d7663a86ae40b959d5a1aea9e8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayFabLoginManager
 --- !u!1 &622013151
 GameObject:
   m_ObjectHideFlags: 0
